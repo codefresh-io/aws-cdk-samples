@@ -7,8 +7,6 @@
 # AWS_SESSION_TOKEN
 
 version: "1.0"
-environment:
-  CDK_VERSION=1.94.1
 
 stages:
   - clone

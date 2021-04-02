@@ -6,6 +6,7 @@
 # AWS_SECRET_ACCESS_KEY
 # AWS_SESSION_TOKEN
 version: "1.0"
+
 stages:
   - clone
   - build
