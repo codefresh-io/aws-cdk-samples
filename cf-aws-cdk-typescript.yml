@@ -41,7 +41,6 @@ steps:
     stage: deploy
     title: Deploy the Typescript app
     type: aws-cdk
-    stage: test
     registry: docker-lr
     working_directory: ${{gitClone}}/lambda-cron
     arguments:
