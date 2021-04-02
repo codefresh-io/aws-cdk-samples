@@ -1,0 +1,75 @@
+# VARIABLES to be defined as pipeline or project variable.
+# for the AWS KEY, we recommend using s a secret shared configuration
+
+# CDK_VERSION=1.94.1
+# AWS_ACCESS_KEY_ID
+# AWS_SECRET_ACCESS_KEY
+# AWS_SESSION_TOKEN
+
+version: "1.0"
+environment:
+  CDK_VERSION=1.94.1
+
+stages:
+  - clone
+  - build
+  - synth
+  - deploy
+  - destroy
+
+steps:
+  gitClone:
+    title: Cloning Sample Project Repository
+    type: git-clone
+    stage: clone
+    arguments:
+      repo: codefresh-io/aws-cdk-samples
+      revision: main
+
+  projectBuild:
+    stage: build
+      title: Building the lambda CDK project for TypeScript
+      type: freestyle
+      working_directory: ${{gitClone}}/lambda-cron
+      image: node
+      commands:
+        - npm install -g aws-cdk
+        - npm install
+        - npm run build
+
+  deploy:
+    stage: deploy
+      title: Deploy the Typescript app
+      type: aws-cdk
+      stage: test
+      registry: docker-lr
+      working_directory: ${{gitClone}}/lambda-cron
+      arguments:
+        action: deploy
+        language: typescript
+        #verbose: true
+        #cdk_version: ${{CDK_VERSION}}
+        AWS_ACCESS_KEY_ID: ${{AWS_ACCESS_KEY_ID}}
+        AWS_SECRET_ACCESS_KEY: ${{AWS_SECRET_ACCESS_KEY}}
+        AWS_SESSION_TOKEN: ${{AWS_SESSION_TOKEN}}
+
+  wait-approval:
+    title: "Wait for approval"
+    type: "pending-approval"
+    timeout:
+      duration: 1
+      finalState: denied
+
+  destroy:
+    title: "Destroying the TypeScript lambda CDK project"
+    stage: destroy
+      type: aws-cdk
+      working_directory: ${{gitClone}}/lambda-cron
+      arguments:
+        action: destroy
+        cmd_ps: --force
+        verbose: false
+        language: typescript
+        AWS_ACCESS_KEY_ID: ${{AWS_ACCESS_KEY_ID}}
+        AWS_SECRET_ACCESS_KEY: ${{AWS_SECRET_ACCESS_KEY}}
+        AWS_SESSION_TOKEN: ${{AWS_SESSION_TOKEN}}

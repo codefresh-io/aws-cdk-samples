@@ -1,0 +1,86 @@
+# VARIABLES to be defined as pipeline or project variable.
+# for the AWS KEY, we recommend using s a secret shared configuration
+
+# CDK_VERSION=1.94.1
+# AWS_ACCESS_KEY_ID
+# AWS_SECRET_ACCESS_KEY
+# AWS_SESSION_TOKEN
+version: "1.0"
+stages:
+  - clone
+  - build
+  - synth
+  - deploy
+  - destroy
+
+steps:
+  gitClone:
+    title: Cloning Sample Project Repository
+    type: git-clone
+    stage: clone
+    arguments:
+      repo: codefresh-io/aws-cdk-samples
+      revision: main
+
+  projectBuild:
+    stage: build
+      title: Building the lambda CDK project for Python
+      type: freestyle
+      working_directory: ${{gitClone}}/dynamodb-lambda
+      #image: python:3.8.8-alpine3.13
+      image: codefreshplugins/aws-cdk-executor-python:1.94.1
+      commands:
+        - |
+          python3 -m venv .venv
+          source .venv/bin/activate
+          pip3 install -r requirements.txt
+          ls -aild .venv/lib/python*
+
+  SynthPython:
+   title: Synthetize the app for Python
+   type: aws-cdk
+   stage: synth
+   working_directory: ${{gitClone}}/dynamodb-lambda
+   arguments:
+      action: synth
+      language: python
+      verbose: true
+      cdk_version: 1.94.1
+      AWS_ACCESS_KEY_ID: ${{AWS_ACCESS_KEY_ID}}
+      AWS_SECRET_ACCESS_KEY: ${{AWS_SECRET_ACCESS_KEY}}
+      AWS_SESSION_TOKEN: ${{AWS_SESSION_TOKEN}}
+
+  deploy:
+    stage: deploy
+      title: Deploy the Python app
+      type: aws-cdk
+      working_directory: ${{gitClone}}/dynamodb-lambda
+      arguments:
+        action: deploy
+        language: python
+        #verbose: true
+        #cdk_version: ${{CDK_VERSION}}
+        AWS_ACCESS_KEY_ID: ${{AWS_ACCESS_KEY_ID}}
+        AWS_SECRET_ACCESS_KEY: ${{AWS_SECRET_ACCESS_KEY}}
+        AWS_SESSION_TOKEN: ${{AWS_SESSION_TOKEN}}
+
+  wait-approval:
+    title: "Wait for approval"
+    type: "pending-approval"
+    timeout:
+      duration: 1
+      finalState: denied
+
+  destroy:
+    title: "Destroying Python lambda CDK project"
+    stage: destroy
+    type: aws-cdk
+    working_directory: ${{gitClone}}/dynamodb-lambda
+    arguments:
+      action: destroy
+      cmd_ps: --force
+      verbose: true
+      language: python
+      AWS_ACCESS_KEY_ID: ${{AWS_ACCESS_KEY_ID}}
+      AWS_SECRET_ACCESS_KEY: ${{AWS_SECRET_ACCESS_KEY}}
+      AWS_SESSION_TOKEN: ${{AWS_SESSION_TOKEN}}
