@@ -24,17 +24,17 @@ steps:
 
   projectBuild:
     stage: build
-      title: Building the lambda CDK project for Python
-      type: freestyle
-      working_directory: ${{gitClone}}/dynamodb-lambda
-      #image: python:3.8.8-alpine3.13
-      image: codefreshplugins/aws-cdk-executor-python:1.94.1
-      commands:
-        - |
-          python3 -m venv .venv
-          source .venv/bin/activate
-          pip3 install -r requirements.txt
-          ls -aild .venv/lib/python*
+    title: Building the lambda CDK project for Python
+    type: freestyle
+    working_directory: ${{gitClone}}/dynamodb-lambda
+    #image: python:3.8.8-alpine3.13
+    image: codefreshplugins/aws-cdk-executor-python:1.94.1
+    commands:
+      - |
+        python3 -m venv .venv
+        source .venv/bin/activate
+        pip3 install -r requirements.txt
+        ls -aild .venv/lib/python*
 
   SynthPython:
    title: Synthetize the app for Python
@@ -65,7 +65,8 @@ steps:
         AWS_SESSION_TOKEN: ${{AWS_SESSION_TOKEN}}
 
   wait-approval:
-    title: "Wait for approval"
+    title: "Wait for approval before destruction"
+    stage: destroy
     type: "pending-approval"
     timeout:
       duration: 1

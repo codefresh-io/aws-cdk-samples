@@ -28,33 +28,34 @@ steps:
 
   projectBuild:
     stage: build
-      title: Building the lambda CDK project for TypeScript
-      type: freestyle
-      working_directory: ${{gitClone}}/lambda-cron
-      image: node
-      commands:
-        - npm install -g aws-cdk
-        - npm install
-        - npm run build
+    title: Building the lambda CDK project for TypeScript
+    type: freestyle
+    working_directory: ${{gitClone}}/lambda-cron
+    image: node
+    commands:
+      - npm install -g aws-cdk
+      - npm install
+      - npm run build
 
   deploy:
     stage: deploy
-      title: Deploy the Typescript app
-      type: aws-cdk
-      stage: test
-      registry: docker-lr
-      working_directory: ${{gitClone}}/lambda-cron
-      arguments:
-        action: deploy
-        language: typescript
-        #verbose: true
-        #cdk_version: ${{CDK_VERSION}}
-        AWS_ACCESS_KEY_ID: ${{AWS_ACCESS_KEY_ID}}
-        AWS_SECRET_ACCESS_KEY: ${{AWS_SECRET_ACCESS_KEY}}
-        AWS_SESSION_TOKEN: ${{AWS_SESSION_TOKEN}}
+    title: Deploy the Typescript app
+    type: aws-cdk
+    stage: test
+    registry: docker-lr
+    working_directory: ${{gitClone}}/lambda-cron
+    arguments:
+      action: deploy
+      language: typescript
+      #verbose: true
+      #cdk_version: ${{CDK_VERSION}}
+      AWS_ACCESS_KEY_ID: ${{AWS_ACCESS_KEY_ID}}
+      AWS_SECRET_ACCESS_KEY: ${{AWS_SECRET_ACCESS_KEY}}
+      AWS_SESSION_TOKEN: ${{AWS_SESSION_TOKEN}}
 
   wait-approval:
-    title: "Wait for approval"
+    title: "Wait for approval before destruction"
+    stage: destroy
     type: "pending-approval"
     timeout:
       duration: 1
@@ -63,13 +64,13 @@ steps:
   destroy:
     title: "Destroying the TypeScript lambda CDK project"
     stage: destroy
-      type: aws-cdk
-      working_directory: ${{gitClone}}/lambda-cron
-      arguments:
-        action: destroy
-        cmd_ps: --force
-        verbose: false
-        language: typescript
-        AWS_ACCESS_KEY_ID: ${{AWS_ACCESS_KEY_ID}}
-        AWS_SECRET_ACCESS_KEY: ${{AWS_SECRET_ACCESS_KEY}}
-        AWS_SESSION_TOKEN: ${{AWS_SESSION_TOKEN}}
+    type: aws-cdk
+    working_directory: ${{gitClone}}/lambda-cron
+    arguments:
+      action: destroy
+      cmd_ps: --force
+      verbose: false
+      language: typescript
+      AWS_ACCESS_KEY_ID: ${{AWS_ACCESS_KEY_ID}}
+      AWS_SECRET_ACCESS_KEY: ${{AWS_SECRET_ACCESS_KEY}}
+      AWS_SESSION_TOKEN: ${{AWS_SESSION_TOKEN}}
