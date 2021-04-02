@@ -53,17 +53,17 @@ steps:
 
   deploy:
     stage: deploy
-      title: Deploy the Python app
-      type: aws-cdk
-      working_directory: ${{gitClone}}/dynamodb-lambda
-      arguments:
-        action: deploy
-        language: python
-        #verbose: true
-        #cdk_version: ${{CDK_VERSION}}
-        AWS_ACCESS_KEY_ID: ${{AWS_ACCESS_KEY_ID}}
-        AWS_SECRET_ACCESS_KEY: ${{AWS_SECRET_ACCESS_KEY}}
-        AWS_SESSION_TOKEN: ${{AWS_SESSION_TOKEN}}
+    title: Deploy the Python app
+    type: aws-cdk
+    working_directory: ${{gitClone}}/dynamodb-lambda
+    arguments:
+      action: deploy
+      language: python
+      #verbose: true
+      #cdk_version: ${{CDK_VERSION}}
+      AWS_ACCESS_KEY_ID: ${{AWS_ACCESS_KEY_ID}}
+      AWS_SECRET_ACCESS_KEY: ${{AWS_SECRET_ACCESS_KEY}}
+      AWS_SESSION_TOKEN: ${{AWS_SESSION_TOKEN}}
 
   wait-approval:
     title: "Wait for approval before destruction"

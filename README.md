@@ -1,7 +1,8 @@
 # aws-cdk-samples
 Samples apps and pipelines to use the aws-cdk Codefresh plugin
 
-[![Codefresh build status]( https://g.codefresh.io/api/badges/pipeline/cf-support/AWS-CDK%2Faws-cdk-typescriptTest?type=cf-2&key=eyJhbGciOiJIUzI1NiJ9.NWY4ZGIwN2I0ZTZiYTcxYTlkNmE0YmRi.yLwabvNEULlRNqg3JE79RV_snKflnzkoS8wI50pXfEw)]( https://g.codefresh.io/pipelines/edit/new/builds?id=6067a9f3cefd7137179747f5&pipeline=aws-cdk-typescriptTest&projects=AWS-CDK&projectId=605b50f338440b464b5557e7)
+[![TypeScript build status]( https://g.codefresh.io/api/badges/pipeline/cf-support/AWS-CDK%2Faws-cdk-typescriptTest?type=cf-2&key=eyJhbGciOiJIUzI1NiJ9.NWY4ZGIwN2I0ZTZiYTcxYTlkNmE0YmRi.yLwabvNEULlRNqg3JE79RV_snKflnzkoS8wI50pXfEw)]( https://g.codefresh.io/pipelines/edit/new/builds?id=6067a9f3cefd7137179747f5&pipeline=aws-cdk-typescriptTest&projects=AWS-CDK&projectId=605b50f338440b464b5557e7)
+
 
 There are two pipelines to show an end-to-end pipeline using the aws-cdk typed step.
 
